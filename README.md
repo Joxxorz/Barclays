@@ -79,8 +79,10 @@ Output:
   requires fewer than 100 characters.
 - Each robot uses exactly two lines: position, then instructions. An explicitly
   empty instruction line is valid; a missing line is an error. For example,
-  `5 3\n1 1 N\n\n` has an empty instruction line, while `5 3\n1 1 N\n`
-  does not. LF and CRLF are supported. Position tokens allow surrounding and
+  `5 3\n1 1 N\n` has an empty instruction line, while `5 3\n1 1 N`
+  is missing it. A conventional final newline after commands is accepted
+  (`5 3\n1 1 N\nF\n`), as is a world with no robots (`5 3\n`).
+  LF and CRLF are supported. Position tokens allow surrounding and
   separating whitespace; instruction lines contain only L/R/F, without spaces.
   Blank separator lines between robots are not part of the format.
 - `commands.ts` contains static function handlers and a registry-based command

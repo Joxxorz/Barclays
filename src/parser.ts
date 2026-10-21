@@ -12,8 +12,8 @@ function coordinate(token: string, context: string): number {
 
 export function parseInput(raw: string): SimulationInput {
   const lines = raw.split(/\r?\n/);
-  // Remove only the line terminator's split artifact, preserving empty instructions.
-  if (raw.endsWith('\n')) lines.pop();
+  // A trailing empty position slot is a final newline; an instruction slot is meaningful.
+  if (raw.endsWith('\n') && lines.length % 2 === 0) lines.pop();
   const worldTokens = (lines[0] ?? '').trim().split(/\s+/);
   if (worldTokens.length !== 2) throw new Error('Line 1: expected world dimensions (maxX maxY)');
   const maxX = coordinate(worldTokens[0]!, 'Line 1');

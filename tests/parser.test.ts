@@ -13,6 +13,14 @@ describe('parseInput', () => {
     expect(parseInput('5 3\n1 1 N\n\n2 2 E\nF').robots.map(r => r.instructions)).toEqual([[], ['F']]);
     expect(parseInput('5 3\n1 1 N\n\n').robots[0]?.instructions).toEqual([]);
   });
+  it.each(['\n', '\r\n'])('handles EOF instruction slots with %j line endings', nl => {
+    expect(parseInput(['5 3', '1 1 N', ''].join(nl)).robots[0]?.instructions).toEqual([]);
+    expect(() => parseInput(['5 3', '1 1 N'].join(nl))).toThrow(/missing instruction line/);
+    expect(parseInput(['5 3', '1 1 N', 'F', ''].join(nl)).robots[0]?.instructions).toEqual(['F']);
+    expect(parseInput(['5 3', ''].join(nl)).robots).toEqual([]);
+    expect(() => parseInput(['5 3', '', ''].join(nl))).toThrow(/expected position/);
+    expect(() => parseInput(['5 3', '1 1 N', 'F', '', ''].join(nl))).toThrow(/expected position/);
+  });
   it('accepts 99 instructions', () => {
     expect(parseInput(`50 50\n0 0 N\n${'R'.repeat(99)}`).robots[0]?.instructions).toHaveLength(99);
   });
@@ -21,7 +29,7 @@ describe('parseInput', () => {
     '5 3\n-1 0 N\nF', '5 3\n1.5 0 N\nF', '5 3\n51 0 N\nF',
     '5 3\n6 0 N\nF', '5 3\n0 4 N\nF', '5 3\n0 0 Q\nF',
     '5 3\n0 0 NN\nF', '5 3\n0 0 N\nf', '5 3\n0 0 N\nF F',
-    '5 3\n0 0 N', '5 3\n0 0 N\n', '5 3\n\nF', '5 3\n0 0\nF',
+    '5 3\n0 0 N', '5 3\n\nF', '5 3\n0 0\nF',
     `5 3\n0 0 N\n${'F'.repeat(100)}`, '5 3\n\n',
   ])('rejects malformed input %j', raw => {
     expect(() => parseInput(raw)).toThrow(Error);
